@@ -32,6 +32,8 @@ public class EmpresaHotel {
         return null;
     }
 
+
+
     public void mostrarConfirmacion(Cliente cliente, Reserva reserva){
         System.out.println("Reserva realizada con exito. ");
         System.out.println("Cliente: " + cliente.getNombre());
