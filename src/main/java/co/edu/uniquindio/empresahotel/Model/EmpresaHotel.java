@@ -1,6 +1,6 @@
 package co.edu.uniquindio.empresahotel.Model;
 
-import co.edu.uniquindio.empresahotel.Services.IConsumible;
+import co.edu.uniquindio.empresahotel.Services.*;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class EmpresaHotel {
+public class EmpresaHotel implements IClienteCrud, IHabitacionCrud, IServicioCrud, IConsultaServicios {
     private String nombre;
 
     private List<Reserva> reservaList = new ArrayList<>();
@@ -21,7 +21,8 @@ public class EmpresaHotel {
         this.nombre=nombre;
     }
 
-    public Habitacion buscarHabitacionNumero(Cliente cliente, int numeroHabitacion){
+    public Habitacion buscarHabitacionNumero(Cliente cliente,
+                                             int numeroHabitacion){
         for (Reserva reserva : cliente.getReservaList()){
             Habitacion habitacion = reserva.getHabitacion();
             if (habitacion.getNumero() == numeroHabitacion){
@@ -32,23 +33,26 @@ public class EmpresaHotel {
         return null;
     }
 
-
-
-    public void mostrarConfirmacion(Cliente cliente, Reserva reserva){
-        System.out.println("Reserva realizada con exito. ");
+    public void mostrarConfirmacion(Cliente cliente,
+                                    Reserva reserva){
         System.out.println("Cliente: " + cliente.getNombre());
         System.out.println("Reserva desde " + reserva.getFechaEntrada() + " hasta " + reserva.getFechaSalida());
         System.out.println("Tipo de habitación " + reserva.getHabitacion());
         System.out.println("Precio: " + reserva.getHabitacion().getPrecio());
+        System.out.println("----------------------------------------");
     }
 
-    public void reservar(Cliente cliente, Reserva reserva){
+    public void reservar(Cliente cliente,
+                         Reserva reserva){
         cliente.agregarReserva(reserva);
         reservaList.add(reserva);
         mostrarConfirmacion(cliente, reserva);
     }
 
-    public void serviciosCliente(String dNI, int numeroHabitacion, int opcion, String nombreServicio){
+    public void serviciosCliente(String dNI,
+                                 int numeroHabitacion,
+                                 int opcion,
+                                 String nombreServicio){
         Cliente cliente = buscarClienteDni(dNI);
         verificarClienteExiste(cliente);
         Habitacion habitacion = buscarHabitacionNumero(cliente, numeroHabitacion);
@@ -56,7 +60,9 @@ public class EmpresaHotel {
         menuServicios(habitacion, opcion, nombreServicio);
     }
 
-    public void menuServicios(Habitacion habitacion, int numero, String nombreServicio) {
+    private void menuServicios(Habitacion habitacion,
+                              int numero,
+                              String nombreServicio) {
         Servicio servicio = null;
         switch (numero) {
             case 1:
@@ -69,113 +75,107 @@ public class EmpresaHotel {
                 servicio = Servicio.limpieza();
                 break;
             case 4:
-                // Crear un nuevo ServicioHabitacion con el nombre proporcionado
-                servicio = new ServicioHabitacion(nombreServicio);
+                if (nombreServicio == null || nombreServicio.isEmpty()) {
+                    System.out.println("El nombre del servicio no puede ser nulo o vacío.");
+                    return;
+                }
+                servicio = new ServicioHabitacion();
+                servicio.setNombre(nombreServicio);
                 servicio.consumir();
                 break;
             default:
                 System.out.println("Opción no válida. Por favor, seleccione una opción entre 1 y 4.");
                 break;
         }
-
         if (servicio != null) {
             habitacion.agregarServicio(servicio);
+        } else {
+            System.out.println("No se pudo agregar el servicio. ");
         }
-    }
-
-    public void mostrarServicios(){
-        System.out.println("1- Servicio Spa. ");
-        System.out.println("2- Servicio Restaurante. ");
-        System.out.println("3- Servicio Limpieza. ");
-        System.out.println("4- Otro servicio. ");
     }
 
     public void mostrarReservas(){
         System.out.println("Listado de reservas: ");
         for (Cliente cliente : clienteList){
-            System.out.println("--------------------------------");
             System.out.println("Nombre del cliente: " + cliente.getNombre());
             for (Reserva reserva : cliente.getReservaList()){
                 System.out.println("Reserva desde " + reserva.getFechaEntrada() + " hasta " + reserva.getFechaSalida());
             }
-            System.out.println("--------------------------------");
         }
     }
 
-    public void mostrarServiciosCliente(String dNI, int numeroHabitacion){
+    public void mostrarServiciosCliente(String dNI,
+                                        int numeroHabitacion){
         Cliente cliente = buscarClienteDni(dNI);
         verificarClienteExiste(cliente);
         Habitacion habitacionBuscada = buscarHabitacionNumero(cliente, numeroHabitacion);
         verificarHabitacionExiste(habitacionBuscada);
-        System.out.println("--------------------------------------------");
         System.out.println("Servicios consumidos en la habitación " + numeroHabitacion + ":");
         serviciosConsumidosHabitacion(habitacionBuscada);
     }
 
-    public Cliente obtenerCliente(String nombre, String dni){
-        Cliente cliente = buscarClienteDni(dni);
-        if (cliente == null){
-            cliente = new Cliente(nombre, dni);
-            clienteList.add(cliente);
-        }
-        return cliente;
-    }
-
     public void costoEstadia(String dNI, String idReserva){
         int dias = calcularDias(dNI, idReserva);
-        float costo = costoHabitacion(buscarReserva(idReserva, Objects.requireNonNull(buscarClienteDni(dNI)).getReservaList()));
+        float costo = costoHabitacion(buscarReserva(idReserva,
+                Objects.requireNonNull(buscarClienteDni(dNI)).getReservaList()));
         float costoTotal = dias * costo;
 
         System.out.println("El costo de la estadía es: " + costoTotal + " , espero que vuelvas =). ");
     }
 
-    public void verificarHabitacionExiste(Habitacion habitacion){
+    private void verificarHabitacionExiste(Habitacion habitacion){
         if(habitacion == null){
             System.out.println("Habitación no encontrada para el cliente dado. ");
         }
     }
 
-    public void verificarClienteExiste(Cliente cliente){
+    private void verificarClienteExiste(Cliente cliente){
         if (cliente == null){
             System.out.println("Cliente no encontrado");
         }
     }
 
-    public void serviciosConsumidosHabitacion(Habitacion habitacion) {
+    private void serviciosConsumidosHabitacion(Habitacion habitacion) {
         for (IConsumible servicio : habitacion.getServicioList()) {
             if (servicio != null) {
-                System.out.println("- " + servicio.getNombre());
+                if (servicio.getNombre() == null){
+                    continue;
+                } else {
+                    System.out.println("- " + servicio.getNombre());
+                }
             }
         }
     }
 
-    private Cliente buscarClienteDni(String dni){
-        for (Cliente cliente : getClienteList()){
-            if (cliente.getdNI().equals(dni)){
+    public Cliente buscarClienteDni(String dni){
+        for (Cliente cliente : clienteList) {
+            if (cliente.getdNI().equals(dni)) {
                 return cliente;
             }
         }
-
         return null;
     }
 
     public int calcularDias(String dNI, String iDReserva){
-        Reserva reservaCliente = buscarReserva(iDReserva, Objects.requireNonNull(buscarClienteDni(dNI)).getReservaList());
-        long diferenciaDias = calcularDiferenciaDias(reservaCliente.getFechaEntrada(), reservaCliente.getFechaSalida());
+        Reserva reservaCliente = buscarReserva(iDReserva,
+                Objects.requireNonNull(buscarClienteDni(dNI)).getReservaList());
+        long diferenciaDias = calcularDiferenciaDias(reservaCliente.getFechaEntrada(),
+                reservaCliente.getFechaSalida());
 
         return (int) diferenciaDias;
     }
 
     public float costoHabitacion(Reserva reserva){
-        float costo = reserva.getHabitacion().getPrecio();
-        return costo;
+        return reserva.getHabitacion().getPrecio();
     }
 
-    public long calcularDiferenciaDias(LocalDateTime fechaInicial, LocalDateTime fechaFinal){
+    public long calcularDiferenciaDias(LocalDateTime fechaInicial,
+                                       LocalDateTime fechaFinal){
         return ChronoUnit.DAYS.between(fechaInicial,fechaFinal);
     }
 
-    public Reserva buscarReserva(String iDReserva, List<Reserva> reservaList){
+    public Reserva buscarReserva(String iDReserva,
+                                 List<Reserva> reservaList){
         for (Reserva reserva : reservaList){
             if(iDReserva.equals(reserva.getIdReserva())){
                 return reserva;
@@ -215,5 +215,191 @@ public class EmpresaHotel {
 
     public void setClienteList(List<Cliente> clienteList) {
         this.clienteList = clienteList;
+    }
+
+    @Override
+    public boolean crearCliente(String nombre,
+                                String dni) {
+        Cliente clienteExistente = buscarClienteDni(dni);
+        if (clienteExistente == null) {
+            Cliente cliente = new Cliente(nombre, dni);
+            clienteList.add(cliente);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean updateCliente(String nombre, String dni) {
+        Cliente clienteExistente = buscarClienteDni(dni);
+        if (clienteExistente != null) {
+            clienteExistente.setNombre(nombre);
+            clienteExistente.setdNI(dni);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean eliminarCliente(String dni) {
+        Cliente clienteExistente = buscarClienteDni(dni);
+        if (clienteExistente != null) {
+            clienteList.remove(clienteExistente);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean crearHabitacion(int numero, TipoHabitacion tipoHabitacion, float precio) {
+        Habitacion habitacionExistente = buscarHabitacionExiste(numero);
+        if (habitacionExistente == null){
+            Habitacion habitacion = new Habitacion();
+            habitacion.setNumero(numero);
+            habitacion.setTipoHabitacion(tipoHabitacion);
+            habitacion.setPrecio(precio);
+            habitacionList.add(habitacion);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean updateHabitacion(int numero, TipoHabitacion tipoHabitacion, float precio) {
+        Habitacion habitacionExistente = buscarHabitacionExiste(numero);
+        if (habitacionExistente != null) {
+            habitacionExistente.setTipoHabitacion(tipoHabitacion);
+            habitacionExistente.setPrecio(precio);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean eliminarHabitacion(int numero) {
+        Habitacion habitacionExistente = buscarHabitacionExiste(numero);
+        if (habitacionExistente != null) {
+            habitacionList.remove(habitacionExistente);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean crearServicio(String nombre,
+                                 int numeroHabitacion,
+                                 String dniCliente) {
+        Servicio servicioExistente = buscarServicioExiste(nombre, numeroHabitacion, dniCliente);
+        Cliente cliente = buscarClienteDni(dniCliente);
+        Habitacion habitacion = buscarHabitacionNumero(cliente, numeroHabitacion);
+        if (servicioExistente == null){
+            Servicio servicio = new Servicio(nombre);
+            habitacion.getServicioList().add(servicio);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean updateServicio(String nombre, int numeroHabitacion, String dniCliente) {
+        Cliente cliente = buscarClienteDni(dniCliente);
+        if (cliente != null) {
+            Habitacion habitacion = buscarHabitacionNumero(cliente, numeroHabitacion);
+            if (habitacion != null) {
+                for (Servicio servicio : habitacion.getServicioList()) {
+                    if (servicio != null && servicio.getNombre().equals(nombre)) {
+                        servicio.setNombre(nombre);
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean eliminarServicio(String nombre, int numeroHabitacion, String dniCliente) {
+        Cliente cliente = buscarClienteDni(dniCliente);
+        if (cliente != null) {
+            Habitacion habitacion = buscarHabitacionNumero(cliente, numeroHabitacion);
+            if (habitacion != null) {
+                return habitacion.getServicioList().removeIf(servicio -> servicio != null && servicio.getNombre().equals(nombre));
+            }
+        }
+        return false;
+    }
+
+    private Servicio buscarServicioExiste(String nombre,
+                                          int numeroHabitacion,
+                                          String dniCliente) {
+        Servicio servicioExistente = null;
+        Cliente cliente = buscarClienteDni(dniCliente);
+        Habitacion habitacion = buscarHabitacionNumero(cliente, numeroHabitacion);
+        for (Servicio servicio : habitacion.getServicioHabitacionList()){
+            if (servicio.getNombre().equals(nombre)){
+                servicioExistente = servicio;
+                break;
+            }
+        }
+
+        return servicioExistente;
+    }
+
+    public String obtenerServicio(String nombre, int numeroHabitacion, String dniCliente){
+        Cliente cliente = buscarClienteDni(dniCliente);
+        Habitacion habitacion = buscarHabitacionNumero(cliente, numeroHabitacion);
+        for (Servicio servicio : habitacion.getServicioList()) {
+            if (servicio.getNombre().equals(nombre)) {
+                return servicio.toString();
+            }
+        }
+        System.out.println("Servicio no encontrado. ");
+        return null;
+    }
+
+    public String obtenerHabitacion(int numero) {
+        for (Habitacion habitacion : habitacionList) {
+            if (habitacion.getNumero() == numero) {
+                return habitacion.toString();
+            }
+        }
+        return null;
+    }
+
+    public String obtenerCliente(String dni) {
+        for (Cliente cliente : clienteList) {
+            if (cliente.getdNI().equals(dni)) {
+                return cliente.toString();
+            }
+        }
+        return null;
+    }
+
+    private Cliente buscarClienteExiste(String dni) {
+        Cliente clienteExistente = null;
+        for (Cliente cliente : getClienteList()){
+            if (cliente.getdNI().equals(dni)){
+                clienteExistente = cliente;
+                break;
+            }
+        }
+
+        return clienteExistente;
+    }
+
+    private Habitacion buscarHabitacionExiste(int numero) {
+        for (Habitacion habitacion : habitacionList) {
+            if (habitacion.getNumero() == numero) {
+                return habitacion;
+            }
+        }
+        return null;
     }
 }

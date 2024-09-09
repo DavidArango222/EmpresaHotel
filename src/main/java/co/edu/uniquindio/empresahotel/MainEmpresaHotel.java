@@ -1,191 +1,187 @@
 package co.edu.uniquindio.empresahotel;
 
 import co.edu.uniquindio.empresahotel.Factory.ModelFactory;
-import co.edu.uniquindio.empresahotel.Model.*;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.InputMismatchException;
-import java.util.List;
-import java.util.Scanner;
+import co.edu.uniquindio.empresahotel.Model.TipoHabitacion;
 
 public class MainEmpresaHotel {
     public static void main(String[] args) {
-        EmpresaHotel hotel = inicializarDatos();
-        Scanner sn = new Scanner(System.in);
-        boolean salir = false;
-        int opcion; //Guardaremos la opcion del usuario
-        while (!salir) {
-            mostrarMenu();
-            try {
-                System.out.println("Escribe una de las opciones");
-                opcion = sn.nextInt();
-                switch (opcion) {
-                    case 1:
-                        System.out.println("Has seleccionado la opción 1");
-                        String nombre = leerStringConsola("Ingresa el nombre del cliente: ");
-                        String dNI = leerStringConsola("Ingresa el DNI del cliente");
-                        Cliente cliente = new Cliente(nombre, dNI);
-                        hotel.reservar(cliente, hotel.buscarReserva("0001", hotel.getReservaList()));
-                        break;
-                    case 2:
-                        System.out.println("Has seleccionado la opción 2");
-                        hotel.mostrarReservas();
-                        break;
-                    case 3:
-                        System.out.println("Has seleccionado la opción 3");
-                        String dNITres = leerStringConsola("Ingresa el DNI del cliente. ");
-                        int numeroHabitacion = leerEntero("Ingresa el número de habitacion. ");
-                        hotel.mostrarServicios();
-                        int opcionTres = leerEntero("Ingresa la opción que desea. ");
-                        String nombreServicio = leerStringConsola("Ingrese el nombre del servicio personalizado: ");
-                        hotel.serviciosCliente(dNITres, numeroHabitacion, opcionTres, nombreServicio);
-                        break;
-                    case 4:
-                        System.out.println("Has seleccionado la opción 4");
-                        String dNICliente = leerStringConsola("Ingresa el DNI del cliente: ");
-                        int numeroHabitacionDato = leerEntero("Ingreas el numero de habitacion");
-                        hotel.mostrarServiciosCliente(dNICliente, numeroHabitacionDato);
-                        break;
-                    case 5:
-                        System.out.println("Has seleccionado la opcion 5");
-                        String dNICinco = leerStringConsola("Ingresa el DNI del cliente: ");
-                        String idReservaCinco = leerStringConsola("Ingresa el id de reserva del cliente: ");
-                        hotel.costoEstadia(dNICinco, idReservaCinco);
-                        break;
-                    case 6:
-                        salir = true;
-                        break;
-                    default:
-                        System.out.println("Solo números entre 1 y 4");
-                }
-            } catch (InputMismatchException e) {
-                System.out.println("Debes insertar un número");
-                sn.next();
-            }
+        ModelFactory modelFactory = ModelFactory.getInstance();
+        reservar(modelFactory);
+        mostrarReservas(modelFactory);
+        serviciosCliente(modelFactory);
+        mostrarServiciosCliente(modelFactory);
+        costoEstadia(modelFactory);
+        crudCliente(modelFactory);
+        crudHabitacion(modelFactory);
+        crudServicio(modelFactory);
+    }
+
+    private static void crudServicio(ModelFactory modelFactory){
+        crearServicio(modelFactory);
+        obtenerServicio(modelFactory);
+        updateServicio(modelFactory);
+        eliminarServicio(modelFactory);
+        System.out.println("-----------------------------------");
+    }
+
+    private static void obtenerServicio(ModelFactory modelFactory){
+        String nombre = "Spa";
+        int numeroHabitacion = 100;
+        String dniCliente = "123456789";
+        String servicio = modelFactory.obtenerServicio(nombre, numeroHabitacion, dniCliente);
+        System.out.println(servicio);
+    }
+
+    private static void crearServicio(ModelFactory modelFactory) {
+        String nombre = "Spa";
+        int numeroHabitacion = 100;
+        String dniClente = "123456789";
+        boolean resultado = modelFactory.crearServicio(nombre, numeroHabitacion, dniClente);
+        notificacionServicio(resultado, "crear");
+    }
+
+    private static void updateServicio(ModelFactory modelFactory){
+        String nombre = "Spa";
+        int numeroHabitacion = 100;
+        String dniClente = "123456789";
+        boolean resultado = modelFactory.updateServicio(nombre, numeroHabitacion, dniClente);
+        notificacionServicio(resultado, "update");
+    }
+
+    private static void eliminarServicio(ModelFactory modelFactory){
+        String nombre = "Spa";
+        int numeroHabitacion = 100;
+        String dniClente = "123456789";
+        boolean resultado = modelFactory.eliminarServicio(nombre, numeroHabitacion, dniClente);
+        notificacionServicio(resultado, "eliminar");
+    }
+
+    private static void notificacionServicio(boolean resultado, String mensaje) {
+        if (resultado){
+            System.out.println("Servicio " + mensaje + " correctamente. ");
+        } else {
+            System.out.println("Servicio NO " + mensaje + ".");
         }
-
-
     }
 
-    private static EmpresaHotel inicializarDatos() {
-            EmpresaHotel empresaHotel = new EmpresaHotel("Hotel Paradise");
-            List<Servicio> listaServicios = new ArrayList<>();
-            listaServicios.add(new Servicio("Spa"));
-            listaServicios.add(new Servicio("Restaurante"));
-            listaServicios.add(new Servicio("Limpieza"));
-            List<ServicioHabitacion> servicioHabitacionList = new ArrayList<>();
-            servicioHabitacionList.add(new ServicioHabitacion("Cancha de volei"));
-            // Crear habitaciones
-            Habitacion habitacion1 = new Habitacion(101, TipoHabitacion.SIMPLE, 100.0f);
-            Habitacion habitacion2 = new Habitacion(102, TipoHabitacion.DOBLE, 150.0f);
-            Habitacion habitacion3 = new Habitacion(103, TipoHabitacion.SUITE, 250.0f);
-            for (Servicio servicio : listaServicios) {
-                habitacion1.agregarServicio(servicio);
-                habitacion2.agregarServicio(servicio);
-                habitacion3.agregarServicio(servicio);
-            }
-            for (ServicioHabitacion servicio : servicioHabitacionList) {
-                habitacion1.agregarServicio(servicio);
-                habitacion2.agregarServicio(servicio);
-                habitacion3.agregarServicio(servicio);
-            }
-            // Añadir habitaciones a la empresa hotelera
-            empresaHotel.getHabitacionList().add(habitacion1);
-            empresaHotel.getHabitacionList().add(habitacion2);
-            empresaHotel.getHabitacionList().add(habitacion3);
-            // Crear clientes
-            Cliente cliente1 = new Cliente("Juan Pérez", "123456789");
-            Cliente cliente2 = new Cliente("María López", "987654321");
-            // Añadir clientes a la empresa hotelera
-            empresaHotel.getClienteList().add(cliente1);
-            empresaHotel.getClienteList().add(cliente2);
-            // Crear reservas
-            Reserva reserva1 = new Reserva("0001", LocalDateTime.of(2024, 9, 10, 15, 0), LocalDateTime.of(2024, 9, 15, 11, 0), habitacion1);
-            Reserva reserva2 = new Reserva("0002", LocalDateTime.of(2024, 9, 10, 15, 0), LocalDateTime.of(2024, 9, 20, 11, 0), habitacion2);
-            // Añadir reservas a los clientes
-            cliente1.agregarReserva(reserva1);
-            cliente2.agregarReserva(reserva2);
-            // Añadir reservas a la empresa hotelera
-            empresaHotel.getReservaList().add(reserva1);
-            empresaHotel.getReservaList().add(reserva2);
-            return empresaHotel;
+    private static void crudHabitacion(ModelFactory modelFactory) {
+        crearHabitacion(modelFactory);
+        obtenerHabitacion(modelFactory);
+        updateHabitacion(modelFactory);
+        eliminarHabitacion(modelFactory);
+        System.out.println("-----------------------------------");
     }
 
-    public static void mostrarMenu(){
-        System.out.println("------------------------------");
-        System.out.println("Por favor selecciona la opción que desea: ");
-        System.out.println("1. Reservar");
-        System.out.println("2. Mostrar lista de reservas");
-        System.out.println("3. Agregar servicios al cliente");
-        System.out.println("4. Mostrar lista de servicios según cliente");
-        System.out.println("5. Mostrar costo de estadia");
-        System.out.println("6. salir");
-        System.out.println("------------------------------");
+    private static void obtenerHabitacion(ModelFactory modelFactory){
+        int numero = 8000;
+        String habitacion = modelFactory.obtenerHabitacion(numero);
+        System.out.println(habitacion);
     }
 
-    private static int leerEntero(String mensaje) {
-        int dato = 0;
-        String captura = "";
-        System.out.println(mensaje);
-        Scanner teclado = new Scanner(System.in);
-        captura = teclado.nextLine();
-        dato = Integer.parseInt(captura);
-        return dato;
+    private static void crearHabitacion(ModelFactory modelFactory){
+        int numero = 8000;
+        TipoHabitacion tipoHabitacion = TipoHabitacion.DOBLE;
+        int precio = 250;
+        boolean resultado = modelFactory.crearHabitacion(numero, tipoHabitacion, precio);
+        notificacionHabitacion(resultado, "creado");
     }
 
-    public static double leerDoubleConsola(String mensaje)
-    {
-        double dato=0;
-        String captura="";
-        System.out.println(mensaje);
-        Scanner teclado = new Scanner(System.in);
-        captura = teclado.nextLine();
-        dato=Double.parseDouble(captura);
-        return dato;
+    private static void updateHabitacion(ModelFactory modelFactory){
+        int numero = 8000;
+        TipoHabitacion tipoHabitacion = TipoHabitacion.DOBLE;
+        int precio = 250;
+        boolean resultado = modelFactory.updateHabitacion(numero, tipoHabitacion, precio);
+        notificacionHabitacion(resultado, "update");
     }
 
-    public static String leerStringConsola(String mensaje)
-    {
-        String captura="";
-        System.out.println(mensaje);
-        Scanner teclado = new Scanner(System.in);
-        captura = teclado.nextLine();
-        return captura;
+    private static void eliminarHabitacion(ModelFactory modelFactory){
+        int numero = 8000;
+        boolean resultado = modelFactory.eliminarHabitacion(numero);
+        notificacionHabitacion(resultado, "eliminado");
     }
 
-    public static boolean leerBooleano(String mensaje){
-
-        Scanner entradaEscaner = new Scanner(System.in);
-        boolean dato;
-
-        System.out.println(mensaje);
-        dato = entradaEscaner.nextBoolean();
-        entradaEscaner.nextLine();
-        return dato;
-    }
-
-    public static boolean leerBoolean2Consola(String mensaje)
-    {
-        boolean dato = false;
-        String captura="";
-        System.out.println(mensaje);
-        Scanner teclado = new Scanner(System.in);
-        captura = teclado.nextLine();
-
-        if(captura.equals("si")) {
-            dato = true;
+    private static void notificacionHabitacion(boolean resultado, String mensaje) {
+        if (resultado){
+            System.out.println("Habitación " + mensaje + " correctamente. ");
+        } else {
+            System.out.println("Habitación NO " + mensaje + ".");
         }
-        return dato;
     }
 
-    private static float leerFloat(String msj) {
-        // TODO Auto-generated method stub
-        float dato;
-        System.out.println(msj);
-        Scanner teclado= new Scanner(System.in); // creando el objeto para leer por teclado
-        dato= Float.parseFloat(teclado.nextLine()); // capturando lo que ingreso por teclado
-        return dato;
+    private static void crudCliente(ModelFactory modelFactory) {
+        crearCLiente(modelFactory);
+        obtenerCliente(modelFactory);
+        updateCliente(modelFactory);
+        eliminarCliente(modelFactory);
+        System.out.println("-----------------------------------");
+    }
+
+    private static void obtenerCliente(ModelFactory modelFactory){
+        String dni = "1124312510";
+        String cliente = modelFactory.obtenerCliente(dni);
+        System.out.println(cliente);
+    }
+
+    private static void eliminarCliente(ModelFactory modelFactory) {
+        String dni = "1124312510";
+        boolean resultado = modelFactory.eliminarCliente(dni);
+        notificacionCliente(resultado, "eliminado");
+    }
+
+    private static void notificacionCliente(boolean resultado, String mensaje) {
+        if (resultado){
+            System.out.println("Cliente " + mensaje + " correctamente. ");
+        } else {
+            System.out.println("Cliente NO " + mensaje + ".");
+        }
+    }
+
+    private static void updateCliente(ModelFactory modelFactory) {
+        String nombre = "Alberto";
+        String dni = "1124312510";
+        boolean resultado = modelFactory.updateCliente(nombre, dni);
+        notificacionCliente(resultado, "update");
+    }
+
+    private static void crearCLiente(ModelFactory modelFactory) {
+        String nombre = "Anderson";
+        String dni = "1124312510";
+        boolean resultado = modelFactory.crearCliente(nombre, dni);
+        notificacionCliente(resultado, "creado");
+    }
+
+    private static void reservar(ModelFactory modelFactory){
+        String dni = "1124312515";
+        String dniReserva = "0003";
+        modelFactory.reservar(dni, dniReserva);
+    }
+
+    private static void mostrarReservas(ModelFactory modelFactory){
+        modelFactory.mostrarReservas();
+    }
+
+    private static void serviciosCliente(ModelFactory modelFactory){
+        System.out.println("---------------------------------------");
+        String dni = "123456789";
+        int numeroHabitacion = 100;
+        int opcion = 4;
+        String nombreServicio = "Masaje especial";
+        modelFactory.serviciosCliente(dni, numeroHabitacion, opcion, nombreServicio);
+        System.out.println("--------------------------------------");
+    }
+
+    private  static void mostrarServiciosCliente(ModelFactory modelFactory){
+        String dni = "123456789";
+        int habitacionNumero = 100;
+        modelFactory.mostrarServiciosCliente(dni, habitacionNumero);
+        System.out.println("--------------------------------------");
+    }
+
+    private static void costoEstadia(ModelFactory modelFactory){
+        String dni = "123456789";
+        String idReserva = "0001";
+        modelFactory.costoEstadia(dni, idReserva);
+        System.out.println("-------------------------------------");
     }
 
 }

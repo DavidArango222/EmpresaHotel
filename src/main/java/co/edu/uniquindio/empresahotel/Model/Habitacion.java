@@ -10,7 +10,7 @@ public class Habitacion {
     private List<Servicio> servicioList = new ArrayList<>();
     private List<ServicioHabitacion> servicioHabitacionList = new ArrayList<>();
 
-
+    public Habitacion(){}
 
     public Habitacion(int numero, TipoHabitacion tipoHabitacion, float precio){
         this.numero=numero;

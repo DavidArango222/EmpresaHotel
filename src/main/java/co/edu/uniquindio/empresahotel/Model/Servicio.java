@@ -38,4 +38,8 @@ public class Servicio implements IConsumible {
                 "nombre='" + nombre + '\'' +
                 '}';
     }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 }

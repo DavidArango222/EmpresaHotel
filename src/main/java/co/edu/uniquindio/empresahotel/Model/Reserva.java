@@ -8,6 +8,8 @@ public class Reserva {
     private LocalDateTime fechaSalida;
     private Habitacion habitacion;
 
+    public Reserva (){}
+
     public Reserva(String idReserva, LocalDateTime fechaEntrada, LocalDateTime fechaSalida, Habitacion habitacion){
         this.idReserva=idReserva;
         this.fechaEntrada=fechaEntrada;
