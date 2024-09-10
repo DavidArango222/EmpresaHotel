@@ -1,5 +1,6 @@
 package co.edu.uniquindio.empresahotel.Model;
 
+import co.edu.uniquindio.empresahotel.Model.Builder.EmpresaHotelBuilder;
 import co.edu.uniquindio.empresahotel.Services.*;
 
 import java.time.LocalDateTime;
@@ -385,5 +386,9 @@ public class EmpresaHotel implements IClienteCrud, IHabitacionCrud, IServicioCru
             }
         }
         return null;
+    }
+
+    public EmpresaHotelBuilder build(){
+        return new EmpresaHotelBuilder();
     }
 }

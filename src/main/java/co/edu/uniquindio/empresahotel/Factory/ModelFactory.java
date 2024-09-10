@@ -1,6 +1,7 @@
 package co.edu.uniquindio.empresahotel.Factory;
 
 import co.edu.uniquindio.empresahotel.Model.*;
+import co.edu.uniquindio.empresahotel.Model.Builder.EmpresaHotelBuilder;
 import co.edu.uniquindio.empresahotel.Model.Builder.HabitacionBuilder;
 import co.edu.uniquindio.empresahotel.Model.Builder.ReservaBuilder;
 import co.edu.uniquindio.empresahotel.Model.Builder.ServicioBuilder;
@@ -50,7 +51,9 @@ public class ModelFactory implements IClienteCrud, IHabitacionCrud, IServicioCru
     }
 
     private void inicializarDatos() {
-        empresaHotel = new EmpresaHotel("Hotel Paradise");
+        empresaHotel = new EmpresaHotelBuilder()
+                .nombre("Hotel Paradise")
+                .build();
         List<Servicio> listaServicios = new ArrayList<>();
         Servicio servicioSpa = new ServicioBuilder()
                 .nombre("spa")
