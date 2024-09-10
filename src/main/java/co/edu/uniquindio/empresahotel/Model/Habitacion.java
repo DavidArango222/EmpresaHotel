@@ -70,7 +70,7 @@ public class Habitacion {
 
     @Override
     public String toString() {
-        return "Habitacion{" +
+        return "Habitación: {" +
                 "numero=" + numero +
                 ", tipoHabitacion=" + tipoHabitacion +
                 ", precio=" + precio +

@@ -53,7 +53,7 @@ public class Reserva {
 
     @Override
     public String toString() {
-        return "Reserva{" +
+        return "Reserva {" +
                 "idReserva='" + idReserva + '\'' +
                 ", fechaEntrada=" + fechaEntrada +
                 ", fechaSalida=" + fechaSalida +

@@ -34,7 +34,7 @@ public class Servicio implements IConsumible {
 
     @Override
     public String toString() {
-        return "Servicio{" +
+        return "Servicio {" +
                 "nombre='" + nombre + '\'' +
                 '}';
     }

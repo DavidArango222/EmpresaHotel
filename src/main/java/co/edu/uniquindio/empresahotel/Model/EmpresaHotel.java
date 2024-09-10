@@ -36,8 +36,8 @@ public class EmpresaHotel implements IClienteCrud, IHabitacionCrud, IServicioCru
     private void mostrarConfirmacion(Cliente cliente,
                                     Reserva reserva){
         System.out.println("Cliente: " + cliente.getNombre());
-        System.out.println("Reserva desde " + reserva.getFechaEntrada() + " hasta " + reserva.getFechaSalida());
-        System.out.println("Tipo de habitación " + reserva.getHabitacion());
+        System.out.println("Reserva desde: " + reserva.getFechaEntrada() + " hasta: " + reserva.getFechaSalida());
+        System.out.println(reserva.getHabitacion());
         System.out.println("Precio: " + reserva.getHabitacion().getPrecio());
         System.out.println("----------------------------------------");
     }
@@ -188,37 +188,18 @@ public class EmpresaHotel implements IClienteCrud, IHabitacionCrud, IServicioCru
         return null;
     }
 
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
     public List<Reserva> getReservaList() {
         return reservaList;
-    }
-
-    public void setReservaList(List<Reserva> reservaList) {
-        this.reservaList = reservaList;
     }
 
     public List<Habitacion> getHabitacionList() {
         return habitacionList;
     }
 
-    public void setHabitacionList(List<Habitacion> habitacionList) {
-        this.habitacionList = habitacionList;
-    }
-
     public List<Cliente> getClienteList() {
         return clienteList;
     }
 
-    public void setClienteList(List<Cliente> clienteList) {
-        this.clienteList = clienteList;
-    }
 
     @Override
     public boolean crearCliente(String nombre,
