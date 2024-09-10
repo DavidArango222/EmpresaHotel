@@ -1,6 +1,9 @@
 package co.edu.uniquindio.empresahotel.Model;
 
+import co.edu.uniquindio.empresahotel.Model.Builder.ClienteBuilder;
 import co.edu.uniquindio.empresahotel.Model.Builder.EmpresaHotelBuilder;
+import co.edu.uniquindio.empresahotel.Model.Builder.HabitacionBuilder;
+import co.edu.uniquindio.empresahotel.Model.Builder.ServicioBuilder;
 import co.edu.uniquindio.empresahotel.Services.*;
 
 import java.time.LocalDateTime;
@@ -117,7 +120,8 @@ public class EmpresaHotel implements IClienteCrud, IHabitacionCrud, IServicioCru
         serviciosConsumidosHabitacion(habitacionBuscada);
     }
 
-    public void costoEstadia(String dNI, String idReserva){
+    public void costoEstadia(String dNI,
+                             String idReserva){
         int dias = calcularDias(dNI, idReserva);
         float costo = costoHabitacion(buscarReserva(idReserva,
                 Objects.requireNonNull(buscarClienteDni(dNI)).getReservaList()));
@@ -160,7 +164,8 @@ public class EmpresaHotel implements IClienteCrud, IHabitacionCrud, IServicioCru
     }
 
 
-    private int calcularDias(String dNI, String iDReserva){
+    private int calcularDias(String dNI,
+                             String iDReserva){
         Reserva reservaCliente = buscarReserva(iDReserva,
                 Objects.requireNonNull(buscarClienteDni(dNI)).getReservaList());
         long diferenciaDias = calcularDiferenciaDias(reservaCliente.getFechaEntrada(),
@@ -207,7 +212,10 @@ public class EmpresaHotel implements IClienteCrud, IHabitacionCrud, IServicioCru
                                 String dni) {
         Cliente clienteExistente = buscarClienteDni(dni);
         if (clienteExistente == null) {
-            Cliente cliente = new Cliente(nombre, dni);
+            Cliente cliente = new ClienteBuilder()
+                    .nombre(nombre)
+                    .dNI(dni)
+                    .build();
             clienteList.add(cliente);
             return true;
         } else {
@@ -216,11 +224,14 @@ public class EmpresaHotel implements IClienteCrud, IHabitacionCrud, IServicioCru
     }
 
     @Override
-    public boolean updateCliente(String nombre, String dni) {
+    public boolean updateCliente(String nombre,
+                                 String dni) {
         Cliente clienteExistente = buscarClienteDni(dni);
         if (clienteExistente != null) {
-            clienteExistente.setNombre(nombre);
-            clienteExistente.setdNI(dni);
+            clienteExistente = new ClienteBuilder()
+                    .nombre(nombre)
+                    .dNI(dni)
+                    .build();
             return true;
         } else {
             return false;
@@ -239,13 +250,16 @@ public class EmpresaHotel implements IClienteCrud, IHabitacionCrud, IServicioCru
     }
 
     @Override
-    public boolean crearHabitacion(int numero, TipoHabitacion tipoHabitacion, float precio) {
+    public boolean crearHabitacion(int numero,
+                                   TipoHabitacion tipoHabitacion,
+                                   float precio) {
         Habitacion habitacionExistente = buscarHabitacionExiste(numero);
         if (habitacionExistente == null){
-            Habitacion habitacion = new Habitacion();
-            habitacion.setNumero(numero);
-            habitacion.setTipoHabitacion(tipoHabitacion);
-            habitacion.setPrecio(precio);
+            Habitacion habitacion = new HabitacionBuilder()
+                    .numero(numero)
+                    .tipoHabitacion(tipoHabitacion)
+                    .precio(precio)
+                    .build();
             habitacionList.add(habitacion);
             return true;
         } else {
@@ -254,11 +268,15 @@ public class EmpresaHotel implements IClienteCrud, IHabitacionCrud, IServicioCru
     }
 
     @Override
-    public boolean updateHabitacion(int numero, TipoHabitacion tipoHabitacion, float precio) {
+    public boolean updateHabitacion(int numero,
+                                    TipoHabitacion tipoHabitacion,
+                                    float precio) {
         Habitacion habitacionExistente = buscarHabitacionExiste(numero);
         if (habitacionExistente != null) {
-            habitacionExistente.setTipoHabitacion(tipoHabitacion);
-            habitacionExistente.setPrecio(precio);
+            habitacionExistente = new HabitacionBuilder()
+                    .tipoHabitacion(tipoHabitacion)
+                    .precio(precio)
+                    .build();
             return true;
         } else {
             return false;
@@ -284,7 +302,9 @@ public class EmpresaHotel implements IClienteCrud, IHabitacionCrud, IServicioCru
         Cliente cliente = buscarClienteDni(dniCliente);
         Habitacion habitacion = buscarHabitacionNumero(cliente, numeroHabitacion);
         if (servicioExistente == null){
-            Servicio servicio = new Servicio(nombre);
+            Servicio servicio = new ServicioBuilder()
+                    .nombre(nombre)
+                    .build();
             habitacion.getServicioList().add(servicio);
             return true;
         } else {
@@ -293,14 +313,18 @@ public class EmpresaHotel implements IClienteCrud, IHabitacionCrud, IServicioCru
     }
 
     @Override
-    public boolean updateServicio(String nombre, int numeroHabitacion, String dniCliente) {
+    public boolean updateServicio(String nombre,
+                                  int numeroHabitacion,
+                                  String dniCliente) {
         Cliente cliente = buscarClienteDni(dniCliente);
         if (cliente != null) {
             Habitacion habitacion = buscarHabitacionNumero(cliente, numeroHabitacion);
             if (habitacion != null) {
                 for (Servicio servicio : habitacion.getServicioList()) {
                     if (servicio != null && servicio.getNombre().equals(nombre)) {
-                        servicio.setNombre(nombre);
+                        servicio = new ServicioBuilder()
+                                .nombre(nombre)
+                                .build();
                         return true;
                     }
                 }
@@ -310,7 +334,9 @@ public class EmpresaHotel implements IClienteCrud, IHabitacionCrud, IServicioCru
     }
 
     @Override
-    public boolean eliminarServicio(String nombre, int numeroHabitacion, String dniCliente) {
+    public boolean eliminarServicio(String nombre,
+                                    int numeroHabitacion,
+                                    String dniCliente) {
         Cliente cliente = buscarClienteDni(dniCliente);
         if (cliente != null) {
             Habitacion habitacion = buscarHabitacionNumero(cliente, numeroHabitacion);
@@ -337,7 +363,9 @@ public class EmpresaHotel implements IClienteCrud, IHabitacionCrud, IServicioCru
         return servicioExistente;
     }
 
-    public String obtenerServicio(String nombre, int numeroHabitacion, String dniCliente){
+    public String obtenerServicio(String nombre,
+                                  int numeroHabitacion,
+                                  String dniCliente){
         Cliente cliente = buscarClienteDni(dniCliente);
         Habitacion habitacion = buscarHabitacionNumero(cliente, numeroHabitacion);
         for (Servicio servicio : habitacion.getServicioList()) {
@@ -367,17 +395,6 @@ public class EmpresaHotel implements IClienteCrud, IHabitacionCrud, IServicioCru
         return null;
     }
 
-    private Cliente buscarClienteExiste(String dni) {
-        Cliente clienteExistente = null;
-        for (Cliente cliente : getClienteList()){
-            if (cliente.getdNI().equals(dni)){
-                clienteExistente = cliente;
-                break;
-            }
-        }
-
-        return clienteExistente;
-    }
 
     private Habitacion buscarHabitacionExiste(int numero) {
         for (Habitacion habitacion : habitacionList) {
@@ -390,5 +407,15 @@ public class EmpresaHotel implements IClienteCrud, IHabitacionCrud, IServicioCru
 
     public EmpresaHotelBuilder build(){
         return new EmpresaHotelBuilder();
+    }
+
+    public void notificacion(boolean resultado,
+                             String mensaje,
+                             String objeto) {
+        if (resultado){
+            System.out.println(objeto + " " + mensaje + " correctamente. ");
+        } else {
+            System.out.println(objeto + " NO " + mensaje + ".");
+        }
     }
 }

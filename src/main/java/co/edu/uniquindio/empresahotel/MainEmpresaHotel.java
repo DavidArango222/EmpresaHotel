@@ -37,7 +37,7 @@ public class MainEmpresaHotel {
         int numeroHabitacion = 100;
         String dniClente = "123456789";
         boolean resultado = modelFactory.crearServicio(nombre, numeroHabitacion, dniClente);
-        notificacionServicio(resultado, "crear");
+        modelFactory.notificacion(resultado, "crear", "Servicio");
     }
 
     private static void updateServicio(ModelFactory modelFactory){
@@ -45,7 +45,7 @@ public class MainEmpresaHotel {
         int numeroHabitacion = 100;
         String dniClente = "123456789";
         boolean resultado = modelFactory.updateServicio(nombre, numeroHabitacion, dniClente);
-        notificacionServicio(resultado, "update");
+        modelFactory.notificacion(resultado, "update", "Servicio");
     }
 
     private static void eliminarServicio(ModelFactory modelFactory){
@@ -53,15 +53,7 @@ public class MainEmpresaHotel {
         int numeroHabitacion = 100;
         String dniClente = "123456789";
         boolean resultado = modelFactory.eliminarServicio(nombre, numeroHabitacion, dniClente);
-        notificacionServicio(resultado, "eliminar");
-    }
-
-    private static void notificacionServicio(boolean resultado, String mensaje) {
-        if (resultado){
-            System.out.println("Servicio " + mensaje + " correctamente. ");
-        } else {
-            System.out.println("Servicio NO " + mensaje + ".");
-        }
+        modelFactory.notificacion(resultado, "eliminar", "Servicio");
     }
 
     private static void crudHabitacion(ModelFactory modelFactory) {
@@ -83,7 +75,7 @@ public class MainEmpresaHotel {
         TipoHabitacion tipoHabitacion = TipoHabitacion.DOBLE;
         int precio = 250;
         boolean resultado = modelFactory.crearHabitacion(numero, tipoHabitacion, precio);
-        notificacionHabitacion(resultado, "creado");
+        modelFactory.notificacion(resultado, "creado", "Habitación");
     }
 
     private static void updateHabitacion(ModelFactory modelFactory){
@@ -91,21 +83,13 @@ public class MainEmpresaHotel {
         TipoHabitacion tipoHabitacion = TipoHabitacion.DOBLE;
         int precio = 250;
         boolean resultado = modelFactory.updateHabitacion(numero, tipoHabitacion, precio);
-        notificacionHabitacion(resultado, "update");
+        modelFactory.notificacion(resultado, "update", "Habitación");
     }
 
     private static void eliminarHabitacion(ModelFactory modelFactory){
         int numero = 8000;
         boolean resultado = modelFactory.eliminarHabitacion(numero);
-        notificacionHabitacion(resultado, "eliminado");
-    }
-
-    private static void notificacionHabitacion(boolean resultado, String mensaje) {
-        if (resultado){
-            System.out.println("Habitación " + mensaje + " correctamente. ");
-        } else {
-            System.out.println("Habitación NO " + mensaje + ".");
-        }
+        modelFactory.notificacion(resultado, "eliminado", "Habitación");
     }
 
     private static void crudCliente(ModelFactory modelFactory) {
@@ -125,32 +109,25 @@ public class MainEmpresaHotel {
     private static void eliminarCliente(ModelFactory modelFactory) {
         String dni = "1124312510";
         boolean resultado = modelFactory.eliminarCliente(dni);
-        notificacionCliente(resultado, "eliminado");
-    }
-
-    private static void notificacionCliente(boolean resultado, String mensaje) {
-        if (resultado){
-            System.out.println("Cliente " + mensaje + " correctamente. ");
-        } else {
-            System.out.println("Cliente NO " + mensaje + ".");
-        }
+        modelFactory.notificacion(resultado, "eliminado", "Cliente");
     }
 
     private static void updateCliente(ModelFactory modelFactory) {
         String nombre = "Alberto";
         String dni = "1124312510";
         boolean resultado = modelFactory.updateCliente(nombre, dni);
-        notificacionCliente(resultado, "update");
+        modelFactory.notificacion(resultado, "update", "Cliente");
     }
 
     private static void crearCLiente(ModelFactory modelFactory) {
         String nombre = "Anderson";
         String dni = "1124312510";
         boolean resultado = modelFactory.crearCliente(nombre, dni);
-        notificacionCliente(resultado, "creado");
+        modelFactory.notificacion(resultado, "creado", "Cliente");
     }
 
     private static void reservar(ModelFactory modelFactory){
+        System.out.println("-------------------------------");
         String dni = "1124312515";
         String dniReserva = "0003";
         modelFactory.reservar(dni, dniReserva);

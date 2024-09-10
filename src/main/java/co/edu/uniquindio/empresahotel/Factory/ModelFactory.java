@@ -30,11 +30,15 @@ public class ModelFactory implements IClienteCrud, IHabitacionCrud, IServicioCru
         return modelFactory;
     }
 
-    public void reservar(String dni, String dniReserva){
+    public void reservar(String dni,
+                         String dniReserva){
         empresaHotel.reservar(dni, dniReserva);
     }
 
-    public void serviciosCliente(String dni, int numeroHabitacion, int opcion, String nombreServicio){
+    public void serviciosCliente(String dni,
+                                 int numeroHabitacion,
+                                 int opcion,
+                                 String nombreServicio){
         empresaHotel.serviciosCliente(dni, numeroHabitacion, opcion, nombreServicio);
     }
 
@@ -42,11 +46,13 @@ public class ModelFactory implements IClienteCrud, IHabitacionCrud, IServicioCru
         empresaHotel.mostrarReservas();
     }
 
-    public void mostrarServiciosCliente(String dni, int numeroHabitacion){
+    public void mostrarServiciosCliente(String dni,
+                                        int numeroHabitacion){
         empresaHotel.mostrarServiciosCliente(dni, numeroHabitacion);
     }
 
-    public void costoEstadia(String dni, String idReserva){
+    public void costoEstadia(String dni,
+                             String idReserva){
         empresaHotel.costoEstadia(dni, idReserva);
     }
 
@@ -157,7 +163,8 @@ public class ModelFactory implements IClienteCrud, IHabitacionCrud, IServicioCru
     }
 
     @Override
-    public boolean updateCliente(String nombre, String dni) {
+    public boolean updateCliente(String nombre,
+                                 String dni) {
         return empresaHotel.updateCliente(nombre, dni);
     }
 
@@ -174,7 +181,7 @@ public class ModelFactory implements IClienteCrud, IHabitacionCrud, IServicioCru
     }
 
     @Override
-    public String obtenerHabitacion(int numero){
+    public String obtenerHabitacion(int numero) {
         return empresaHotel.obtenerHabitacion(numero);
     }
 
@@ -191,23 +198,37 @@ public class ModelFactory implements IClienteCrud, IHabitacionCrud, IServicioCru
     }
 
     @Override
-    public boolean crearServicio(String nombre, int numeroHabitacion, String dniCliente) {
+    public boolean crearServicio(String nombre,
+                                 int numeroHabitacion,
+                                 String dniCliente) {
         return empresaHotel.crearServicio(nombre, numeroHabitacion, dniCliente);
     }
 
     @Override
-    public String obtenerServicio(String nombre, int numeroHabitacion, String dniCliente){
+    public String obtenerServicio(String nombre,
+                                  int numeroHabitacion,
+                                  String dniCliente){
         return  empresaHotel.obtenerServicio(nombre, numeroHabitacion, dniCliente);
     }
 
     @Override
-    public boolean updateServicio(String nombre, int numeroHabitacion, String dniCliente) {
+    public boolean updateServicio(String nombre,
+                                  int numeroHabitacion,
+                                  String dniCliente) {
         return empresaHotel.updateServicio(nombre, numeroHabitacion, dniCliente);
     }
 
     @Override
-    public boolean eliminarServicio(String nombre, int numeroHabitacion, String dniCliente) {
+    public boolean eliminarServicio(String nombre,
+                                    int numeroHabitacion,
+                                    String dniCliente) {
         return empresaHotel.eliminarServicio(nombre, numeroHabitacion, dniCliente);
+    }
+
+    public void notificacion(boolean resultado,
+                             String mensaje,
+                             String objeto) {
+        empresaHotel.notificacion(resultado, mensaje, objeto);
     }
 }
 
