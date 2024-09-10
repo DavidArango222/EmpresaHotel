@@ -1,5 +1,7 @@
 package co.edu.uniquindio.empresahotel.Model;
 
+import co.edu.uniquindio.empresahotel.Model.Builder.ReservaBuilder;
+
 import java.time.LocalDateTime;
 
 public class Reserva {
@@ -57,5 +59,9 @@ public class Reserva {
                 ", fechaSalida=" + fechaSalida +
                 ", habitacion=" + habitacion +
                 '}';
+    }
+
+    public ReservaBuilder build(){
+        return new ReservaBuilder();
     }
 }

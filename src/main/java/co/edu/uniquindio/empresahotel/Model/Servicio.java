@@ -42,4 +42,8 @@ public class Servicio implements IConsumible {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
+
+    public ServicioHabitacion build(){
+        return new ServicioHabitacion();
+    }
 }

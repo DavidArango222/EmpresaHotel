@@ -1,5 +1,7 @@
 package co.edu.uniquindio.empresahotel.Model;
 
+import co.edu.uniquindio.empresahotel.Model.Builder.HabitacionBuilder;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,5 +75,9 @@ public class Habitacion {
                 ", tipoHabitacion=" + tipoHabitacion +
                 ", precio=" + precio +
                 '}';
+    }
+
+    public HabitacionBuilder build(){
+        return new HabitacionBuilder();
     }
 }

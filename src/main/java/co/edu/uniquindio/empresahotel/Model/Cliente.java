@@ -1,5 +1,7 @@
 package co.edu.uniquindio.empresahotel.Model;
 
+import co.edu.uniquindio.empresahotel.Model.Builder.ClienteBuilder;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,5 +52,9 @@ public class Cliente {
                 ", dNI=" + dNI +
                 ", reservaList=" + reservaList +
                 '}';
+    }
+
+    public static ClienteBuilder build(){
+        return new ClienteBuilder();
     }
 }

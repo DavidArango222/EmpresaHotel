@@ -21,7 +21,7 @@ public class EmpresaHotel implements IClienteCrud, IHabitacionCrud, IServicioCru
         this.nombre=nombre;
     }
 
-    public Habitacion buscarHabitacionNumero(Cliente cliente,
+    private Habitacion buscarHabitacionNumero(Cliente cliente,
                                              int numeroHabitacion){
         for (Reserva reserva : cliente.getReservaList()){
             Habitacion habitacion = reserva.getHabitacion();
@@ -33,7 +33,7 @@ public class EmpresaHotel implements IClienteCrud, IHabitacionCrud, IServicioCru
         return null;
     }
 
-    public void mostrarConfirmacion(Cliente cliente,
+    private void mostrarConfirmacion(Cliente cliente,
                                     Reserva reserva){
         System.out.println("Cliente: " + cliente.getNombre());
         System.out.println("Reserva desde " + reserva.getFechaEntrada() + " hasta " + reserva.getFechaSalida());
@@ -42,8 +42,10 @@ public class EmpresaHotel implements IClienteCrud, IHabitacionCrud, IServicioCru
         System.out.println("----------------------------------------");
     }
 
-    public void reservar(Cliente cliente,
-                         Reserva reserva){
+    public void reservar(String dni,
+                         String dniReserva){
+        Cliente cliente = buscarClienteDni(dni);
+        Reserva reserva = buscarReserva(dniReserva, reservaList);
         cliente.agregarReserva(reserva);
         reservaList.add(reserva);
         mostrarConfirmacion(cliente, reserva);
@@ -147,7 +149,7 @@ public class EmpresaHotel implements IClienteCrud, IHabitacionCrud, IServicioCru
         }
     }
 
-    public Cliente buscarClienteDni(String dni){
+    private Cliente buscarClienteDni(String dni) {
         for (Cliente cliente : clienteList) {
             if (cliente.getdNI().equals(dni)) {
                 return cliente;
@@ -156,7 +158,8 @@ public class EmpresaHotel implements IClienteCrud, IHabitacionCrud, IServicioCru
         return null;
     }
 
-    public int calcularDias(String dNI, String iDReserva){
+
+    private int calcularDias(String dNI, String iDReserva){
         Reserva reservaCliente = buscarReserva(iDReserva,
                 Objects.requireNonNull(buscarClienteDni(dNI)).getReservaList());
         long diferenciaDias = calcularDiferenciaDias(reservaCliente.getFechaEntrada(),
@@ -165,16 +168,16 @@ public class EmpresaHotel implements IClienteCrud, IHabitacionCrud, IServicioCru
         return (int) diferenciaDias;
     }
 
-    public float costoHabitacion(Reserva reserva){
+    private float costoHabitacion(Reserva reserva){
         return reserva.getHabitacion().getPrecio();
     }
 
-    public long calcularDiferenciaDias(LocalDateTime fechaInicial,
+    private long calcularDiferenciaDias(LocalDateTime fechaInicial,
                                        LocalDateTime fechaFinal){
         return ChronoUnit.DAYS.between(fechaInicial,fechaFinal);
     }
 
-    public Reserva buscarReserva(String iDReserva,
+    private Reserva buscarReserva(String iDReserva,
                                  List<Reserva> reservaList){
         for (Reserva reserva : reservaList){
             if(iDReserva.equals(reserva.getIdReserva())){

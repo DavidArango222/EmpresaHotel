@@ -1,7 +1,11 @@
 package co.edu.uniquindio.empresahotel.Factory;
 
 import co.edu.uniquindio.empresahotel.Model.*;
+import co.edu.uniquindio.empresahotel.Model.Builder.HabitacionBuilder;
+import co.edu.uniquindio.empresahotel.Model.Builder.ReservaBuilder;
+import co.edu.uniquindio.empresahotel.Model.Builder.ServicioBuilder;
 import co.edu.uniquindio.empresahotel.Services.IClienteCrud;
+import co.edu.uniquindio.empresahotel.Services.IConsultaServicios;
 import co.edu.uniquindio.empresahotel.Services.IHabitacionCrud;
 import co.edu.uniquindio.empresahotel.Services.IServicioCrud;
 
@@ -9,7 +13,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ModelFactory implements IClienteCrud, IHabitacionCrud, IServicioCrud{
+public class ModelFactory implements IClienteCrud, IHabitacionCrud, IServicioCrud, IConsultaServicios {
 
     private static ModelFactory modelFactory;
     private EmpresaHotel empresaHotel;
@@ -26,7 +30,7 @@ public class ModelFactory implements IClienteCrud, IHabitacionCrud, IServicioCru
     }
 
     public void reservar(String dni, String dniReserva){
-        empresaHotel.reservar(empresaHotel.buscarClienteDni(dni), empresaHotel.buscarReserva(dniReserva ,empresaHotel.getReservaList()));
+        empresaHotel.reservar(dni, dniReserva);
     }
 
     public void serviciosCliente(String dni, int numeroHabitacion, int opcion, String nombreServicio){
@@ -48,31 +52,40 @@ public class ModelFactory implements IClienteCrud, IHabitacionCrud, IServicioCru
     private void inicializarDatos() {
         empresaHotel = new EmpresaHotel("Hotel Paradise");
         List<Servicio> listaServicios = new ArrayList<>();
-        Servicio servicioSpa = new Servicio("Spa");
+        Servicio servicioSpa = new ServicioBuilder()
+                .nombre("spa")
+                .build();
         listaServicios.add(servicioSpa);
-        Servicio servicioRestaurante = new Servicio("Restaurante");
+        Servicio servicioRestaurante = new ServicioBuilder()
+                .nombre("Restaurante")
+                .build();
         listaServicios.add(servicioRestaurante);
-        Servicio servicioLimpieza = new Servicio("Limpieza");
+        Servicio servicioLimpieza = new ServicioBuilder()
+                .nombre("Limpieza")
+                .build();
         listaServicios.add(servicioLimpieza);
         List<ServicioHabitacion> servicioHabitacionList = new ArrayList<>();
         ServicioHabitacion servicioHabitacionMasaje = new ServicioHabitacion("Masaje especial");
         servicioHabitacionList.add(servicioHabitacionMasaje);
-        Habitacion habitacion1 = new Habitacion();
-        habitacion1.setNumero(100);
-        habitacion1.setTipoHabitacion(TipoHabitacion.SIMPLE);
-        habitacion1.setPrecio(150);
-        Habitacion habitacion2 = new Habitacion();
-        habitacion2.setNumero(200);
-        habitacion2.setTipoHabitacion(TipoHabitacion.DOBLE);
-        habitacion2.setPrecio(250);
-        Habitacion habitacion3 = new Habitacion();
-        habitacion3.setNumero(300);
-        habitacion3.setTipoHabitacion(TipoHabitacion.SUITE);
-        habitacion3.setPrecio(350);
-        Habitacion habitacion4 = new Habitacion();
-        habitacion4.setNumero(400);
-        habitacion4.setTipoHabitacion(TipoHabitacion.DOBLE);
-        habitacion4.setPrecio(250);
+        Habitacion habitacion1 = new HabitacionBuilder()
+                .numero(100)
+                .tipoHabitacion(TipoHabitacion.SIMPLE)
+                .precio(150).build();
+        Habitacion habitacion2 = new HabitacionBuilder()
+                .numero(200)
+                .tipoHabitacion(TipoHabitacion.DOBLE)
+                .precio(250)
+                .build();
+        Habitacion habitacion3 = new HabitacionBuilder()
+                .numero(300)
+                .tipoHabitacion(TipoHabitacion.SUITE)
+                .precio(350)
+                .build();
+        Habitacion habitacion4 = new HabitacionBuilder()
+                .numero(400)
+                .tipoHabitacion(TipoHabitacion.DOBLE)
+                .precio(250)
+                .build();
         for (Servicio servicio : listaServicios) {
             habitacion1.agregarServicio(servicio);
             habitacion2.agregarServicio(servicio);
@@ -89,35 +102,41 @@ public class ModelFactory implements IClienteCrud, IHabitacionCrud, IServicioCru
         empresaHotel.getHabitacionList().add(habitacion2);
         empresaHotel.getHabitacionList().add(habitacion3);
         empresaHotel.getHabitacionList().add(habitacion4);
-        Cliente cliente1 = new Cliente();
-        cliente1.setNombre("Juan Pérez");
-        cliente1.setdNI("123456789");
-        Cliente cliente2 = new Cliente();
-        cliente2.setNombre("María López");
-        cliente2.setdNI("987654321");
-        Cliente cliente3 = new Cliente();
-        cliente3.setNombre("David Arango");
-        cliente3.setdNI("1124312515");
-        empresaHotel.getClienteList().add(cliente1);
+        Cliente cliente1 = Cliente.build()
+                .nombre("Juan Pérez")
+                .dNI("123456789")
+                .build();
+        Cliente cliente2 = Cliente.build()
+                .nombre("María López")
+                .dNI("987654321")
+                .build();
+        Cliente cliente3 = Cliente.build()
+                .nombre("David Arango")
+                .dNI("1124312515")
+                .build();
         empresaHotel.getClienteList().add(cliente2);
         empresaHotel.getClienteList().add(cliente3);
-        Reserva reserva1 = new Reserva();
-        reserva1.setIdReserva("0001");
-        reserva1.setFechaEntrada(LocalDateTime.of(2024, 9, 10, 15, 0));
-        reserva1.setFechaSalida(LocalDateTime.of(2024, 9, 15, 11, 0));
-        reserva1.setHabitacion(habitacion1);
-        Reserva reserva2 = new Reserva();
-        reserva2.setIdReserva("0002");
-        reserva2.setFechaEntrada(LocalDateTime.of(2024, 9, 11, 15, 0));
-        reserva2.setFechaSalida(LocalDateTime.of(2024, 9, 20, 11, 0));
-        reserva2.setHabitacion(habitacion3);
+        empresaHotel.getClienteList().add(cliente1);
+        Reserva reserva1 = new ReservaBuilder()
+                .idReserva("0001")
+                .fechaEntrada(LocalDateTime.of(2024, 9, 10, 15, 0))
+                .fechaSalida(LocalDateTime.of(2024, 9, 20, 15, 0))
+                .habitacion(habitacion1)
+                .build();
         cliente1.agregarReserva(reserva1);
+        Reserva reserva2 = new ReservaBuilder()
+                .idReserva("0002")
+                .fechaEntrada(LocalDateTime.of(2024, 9, 11, 15, 0))
+                .fechaSalida(LocalDateTime.of(2024, 9, 20, 11, 0))
+                .habitacion(habitacion3)
+                .build();
         cliente2.agregarReserva(reserva2);
-        Reserva reserva3 = new Reserva();
-        reserva3.setIdReserva("0003");
-        reserva3.setFechaEntrada(LocalDateTime.of(2024, 9, 15, 15, 0));
-        reserva3.setFechaSalida(LocalDateTime.of(2024, 9, 25, 11, 0));
-        reserva3.setHabitacion(habitacion4);
+        Reserva reserva3 = new ReservaBuilder()
+                .idReserva("0003")
+                .fechaEntrada(LocalDateTime.of(2024, 9, 15, 15, 0))
+                .fechaSalida(LocalDateTime.of(2024, 9, 25, 11, 0))
+                .habitacion(habitacion4)
+                .build();
         empresaHotel.getReservaList().add(reserva1);
         empresaHotel.getReservaList().add(reserva2);
         empresaHotel.getReservaList().add(reserva3);
